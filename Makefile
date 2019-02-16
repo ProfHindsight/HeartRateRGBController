@@ -1,8 +1,8 @@
 # put your *.o targets here, make should handle the rest!
-SRCS = main.c system_stm32f0xx.c
+SRCS = main.c system_stm32f0xx.c gpio_driver.c
 
 # all the files will be generated with this name (main.elf, main.bin, main.hex, etc)
-PROJ_NAME=main
+PROJ_NAME=build/hrrgb
 
 # Location of the Libraries folder from the STM32F0xx Standard Peripheral Library
 STD_PERIPH_LIB=Libraries

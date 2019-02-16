@@ -1,4 +1,5 @@
 #include "stm32f0xx_conf.h"
+#include "gpio_driver.h"
 
 void SysTick_Handler(void) {
   static uint16_t tick = 0;
@@ -13,11 +14,7 @@ void SysTick_Handler(void) {
 
 int main(void)
 {
-
-	RCC->AHBENR |= RCC_AHBENR_GPIOCEN; 	// enable the clock to GPIOC
-						//(RM0091 lists this as IOPCEN, not GPIOCEN)
-
-	GPIOC->MODER = (1 << 16);
+  gpio_init();
 
 	SysTick_Config(SystemCoreClock/100);
 
