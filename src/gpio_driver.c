@@ -12,8 +12,31 @@
 #include "stm32f0xx_rcc.h"
 #include <stdbool.h>
 
+/*
+typedef enum gpio_pins
+{
+  gpio_debug_led    ,
+  gpio_red_led      ,
+  gpio_green_led    ,
+  gpio_blue_led     , // I don't remember these pins
+  gpio_nrf24_miso   ,
+  gpio_nrf24_mosi   ,
+  gpio_nrf24_clk    ,
+  gpio_nrf24_cs     ,
+  gpio_nrf24_ce     ,
+  gpio_debug_rx     ,
+  gpio_debug_tx     ,
+  gpio_clk_lfxo1    , // I don't remember if I have this
+  gpio_clk_lfxo2    , // I don't remember if I have this
+  gpio_swclk        ,
+  gpio_swdio        ,
+  gpio_nrst         ,
+  gpio_swo      
+}gpio_pins_t;
+*/
 
 const gpio_struct_t gpio_pin_mapping[] = {
+  {GPIOA, GPIO_Pin_11, 0x01, 0x00},
   {GPIOB, GPIO_Pin_8, 0x02, GPIO_AF_1},  // gpio_i2c_scl   - D15
   {GPIOB, GPIO_Pin_9, 0x02, GPIO_AF_1},  // gpio_i2c_sda   - D14
   {GPIOA, GPIO_Pin_9, 0x01, 0x00},     // gpio_i2c_power   - D8
