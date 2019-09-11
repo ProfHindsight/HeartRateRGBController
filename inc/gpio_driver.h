@@ -13,12 +13,7 @@
 #include <stdbool.h>
 
 /*
-I have:
-One debug uart
-One debug LED
-Three PWM LEDs
-One Analog/Digital Input
-Pins for future nRF24L01 integration (yea right)
+This needs to match the gpio_driver.c pinout.
 */
 typedef enum gpio_pins
 {
@@ -31,14 +26,10 @@ typedef enum gpio_pins
   gpio_nrf24_clk    ,
   gpio_nrf24_cs     ,
   gpio_nrf24_ce     ,
+  gpio_nrf24_int    ,
   gpio_debug_rx     ,
   gpio_debug_tx     ,
-  gpio_clk_lfxo1    , // I don't remember if I have this
-  gpio_clk_lfxo2    , // I don't remember if I have this
-  gpio_swclk        ,
-  gpio_swdio        ,
-  gpio_nrst         ,
-  gpio_swo      
+  gpio_heart_input  , 
 }gpio_pins_t;
 
 
@@ -59,6 +50,6 @@ typedef struct gpio_struct
 /*
 * Self-explanatory gpio functions
 */
-void gpio_driver_init(void);
+void gpio_init(void);
 void write_gpio(gpio_pins_t gpio_pin, bool value);
 bool read_gpio(gpio_pins_t gpio_pin);

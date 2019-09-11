@@ -24,34 +24,32 @@ typedef enum gpio_pins
   gpio_nrf24_clk    ,
   gpio_nrf24_cs     ,
   gpio_nrf24_ce     ,
+  gpio_nrf24_int    ,
   gpio_debug_rx     ,
   gpio_debug_tx     ,
-  gpio_clk_lfxo1    , // I don't remember if I have this
-  gpio_clk_lfxo2    , // I don't remember if I have this
-  gpio_swclk        ,
-  gpio_swdio        ,
-  gpio_nrst         ,
-  gpio_swo      
+  gpio_heart_input  , 
 }gpio_pins_t;
 */
 
+// This might be better as some kind of define to reduce code size
 const gpio_struct_t gpio_pin_mapping[] = {
   {GPIOA, GPIO_Pin_11, 0x01, 0x00},
-  {GPIOB, GPIO_Pin_8, 0x02, GPIO_AF_1},  // gpio_i2c_scl   - D15
-  {GPIOB, GPIO_Pin_9, 0x02, GPIO_AF_1},  // gpio_i2c_sda   - D14
-  {GPIOA, GPIO_Pin_9, 0x01, 0x00},     // gpio_i2c_power   - D8
-  {GPIOA, GPIO_Pin_6, 0x02, GPIO_AF_0},  // gpio_nrf24_miso  - D12
-  {GPIOA, GPIO_Pin_7, 0x02, GPIO_AF_0},  // gpio_nrf24_mosi  - D11
-  {GPIOA, GPIO_Pin_5, 0x02, GPIO_AF_0},  // gpio_nrf24_clk - D13
-  {GPIOB, GPIO_Pin_6, 0x02, GPIO_AF_0},  // gpio_nrf24_cs  - D10
-  {GPIOC, GPIO_Pin_7, 0x01, 0x00},  // gpio_nrf24_ce  - D9
-  {GPIOA, GPIO_Pin_8, 0x01, 0x00},     // gpio_nrf24_power - D7
-  {GPIOB, GPIO_Pin_10, 0x01, 0x00},    // gpio_nrf24_pa_en - D6
-  {GPIOA, GPIO_Pin_0, 0x03, 0x00},     // gpio_bat_detect  - A0
-  {GPIOA, GPIO_Pin_3, 0x02, GPIO_AF_1},  // gpio_debug_rx  - D0
-  {GPIOA, GPIO_Pin_2, 0x02, GPIO_AF_1}   // gpio_debug_tx  - D1
+  {GPIOA, GPIO_Pin_9, 0x02, GPIO_AF_2},  // RED PWM - A9 - TIM1CH2
+  {GPIOA, GPIO_Pin_8, 0x02, GPIO_AF_2},  // GREEN PWM - A8 - TIM1CH1
+  {GPIOA, GPIO_Pin_10, 0x02, GPIO_AF_2},  // BLUE PWM - A10 - TIM1CH3
+  {GPIOA, GPIO_Pin_6, 0x02, GPIO_AF_0},  // NRF24 MISO
+  {GPIOA, GPIO_Pin_7, 0x02, GPIO_AF_0},  // NRF24 MOSI
+  {GPIOA, GPIO_Pin_5, 0x02, GPIO_AF_0},  // NRF24 CLK
+  {GPIOA, GPIO_Pin_4, 0x02, GPIO_AF_0},  // NRF24 CS
+  {GPIOA, GPIO_Pin_2, 0x01, 0x00},  // NRF24 CE
+  {GPIOA, GPIO_Pin_3, 0x00, 0x00},  // NRF24 INT
+  {GPIOB, GPIO_Pin_7, 0x02, GPIO_AF_0},  // UART RX
+  {GPIOB, GPIO_Pin_6, 0x02, GPIO_AF_0},  // UART TX
+  {GPIOB, GPIO_Pin_0, 0x00, 0x00},  // Heart Input (ADC8, TIM3CH3, GPIO)
 };
 
+
+// Used by gpio_init to do something. Not used anywhere else, so don't worry abou tit.
 int gpiopin_to_gpiopinsource(int input)
 {
   if(input == 0) return 0;
@@ -65,7 +63,10 @@ int gpiopin_to_gpiopinsource(int input)
   return index;
 }
 
-void gpio_driver_init(void)
+
+// I wanted a way to be able to define each pin and then this script would
+// set up each pin. Not very size efficient.
+void gpio_init(void)
 {
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOA, ENABLE);
   RCC_AHBPeriphClockCmd(RCC_AHBPeriph_GPIOB, ENABLE);
@@ -75,7 +76,7 @@ void gpio_driver_init(void)
   {
     gpio_struct_t my_pin = gpio_pin_mapping[i];
     GPIO_InitTypeDef pin_def = {my_pin.gpio_pin,          // Pin number
-                                my_pin.gpio_af_selection, // Pin Mode
+                                my_pin.gpio_mode,         // Pin Mode
                                 GPIO_Speed_10MHz,         // Pin Speed
                                 GPIO_OType_PP,            // Output Type
                                 GPIO_PuPd_NOPULL};        // Pull Direction
@@ -86,6 +87,8 @@ void gpio_driver_init(void)
   }
 }
 
+
+// I also wanted a way to abstract the pin port and value.
 void write_gpio(gpio_pins_t gpio_pin, bool value)
 {
   gpio_struct_t my_pin = gpio_pin_mapping[gpio_pin];

@@ -10,14 +10,6 @@ STD_PERIPH_LIB=Libraries
 # Location of the linker scripts
 LDSCRIPT_INC=Device/ldscripts
 
-# location of OpenOCD Board .cfg files (only used with 'make program')
-OPENOCD_BOARD_DIR=/usr/share/openocd/scripts/board
-
-# Configuration (cfg) file containing programming directives for OpenOCD
-OPENOCD_PROC_FILE=extra/stm32f0-openocd.cfg
-
-# that's it, no need to change anything below this line!
-
 ###################################################
 
 CC=arm-none-eabi-gcc
@@ -67,9 +59,9 @@ $(PROJ_NAME).elf: $(SRCS)
 	$(OBJCOPY) -O binary $(PROJ_NAME).elf $(PROJ_NAME).bin
 	$(OBJDUMP) -St $(PROJ_NAME).elf >$(PROJ_NAME).lst
 	$(SIZE) $(PROJ_NAME).elf
-	
+
 program: $(PROJ_NAME).bin
-	openocd -f $(OPENOCD_BOARD_DIR)/stm32f0discovery.cfg -f $(OPENOCD_PROC_FILE) -c "stm_flash `pwd`/$(PROJ_NAME).bin" -c shutdown
+	~/Documents/stlink/build/Release/st-flash write $(PROJ_NAME).bin 0x8000000
 
 clean:
 	find ./ -name '*~' | xargs rm -f	
