@@ -33,7 +33,7 @@ typedef enum gpio_pins
 
 // This might be better as some kind of define to reduce code size
 const gpio_struct_t gpio_pin_mapping[] = {
-  {GPIOA, GPIO_Pin_11, 0x01, 0x00},
+  {GPIOA, GPIO_Pin_11, 0x02, GPIO_AF_2},
   {GPIOA, GPIO_Pin_9, 0x02, GPIO_AF_2},  // RED PWM - A9 - TIM1CH2
   {GPIOA, GPIO_Pin_8, 0x02, GPIO_AF_2},  // GREEN PWM - A8 - TIM1CH1
   {GPIOA, GPIO_Pin_10, 0x02, GPIO_AF_2},  // BLUE PWM - A10 - TIM1CH3
@@ -77,9 +77,9 @@ void gpio_init(void)
     gpio_struct_t my_pin = gpio_pin_mapping[i];
     GPIO_InitTypeDef pin_def = {my_pin.gpio_pin,          // Pin number
                                 my_pin.gpio_mode,         // Pin Mode
-                                GPIO_Speed_10MHz,         // Pin Speed
+                                GPIO_Speed_50MHz,         // Pin Speed
                                 GPIO_OType_PP,            // Output Type
-                                GPIO_PuPd_NOPULL};        // Pull Direction
+                                GPIO_PuPd_UP};        // Pull Direction
     GPIO_Init(my_pin.gpio_port, &pin_def);
     if(my_pin.gpio_mode == (0x02)) GPIO_PinAFConfig(my_pin.gpio_port,
       gpiopin_to_gpiopinsource(my_pin.gpio_pin),
