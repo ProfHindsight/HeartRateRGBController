@@ -13,7 +13,7 @@ RUN apt-get install -y \
     libusb-1.0 \
     udev
 
-# Create the app files into the container.
+# Copy the heartrate repo files into the container.
 COPY . /app
 WORKDIR /app
 
