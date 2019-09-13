@@ -5,6 +5,8 @@
 
 volatile uint16_t brightness = 0;
 
+
+// Create any time-dependent effects here.
 void TIM2_IRQHandler()
 {
     if(TIM_GetITStatus(TIM2, TIM_IT_Update) != RESET)
@@ -12,6 +14,8 @@ void TIM2_IRQHandler()
         TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
         NVIC_ClearPendingIRQ(TIM2_IRQn);
     }
+
+    // After this, define what you want it to do
     uint16_t cur1 = TIM_GetCapture1(TIM1);
     uint16_t cur2 = TIM_GetCapture1(TIM1);
     uint16_t cur3 = TIM_GetCapture1(TIM1);
@@ -24,6 +28,7 @@ void TIM2_IRQHandler()
     TIM_SetCompare2(TIM1, cur2);
     TIM_SetCompare3(TIM1, cur3);
 
+    // You probably don't need to disable. Save the trees!
     if(cur1 == 0 && cur2 == 0 && cur3 == 0)
     {
         TIM_Cmd(TIM2, DISABLE);
@@ -71,6 +76,7 @@ void write_RGB(uint16_t red, uint16_t green, uint16_t blue)
     TIM_SetCompare1(TIM1, green);
     TIM_SetCompare2(TIM1, red);
     TIM_SetCompare3(TIM1, blue);
+    TIM_Cmd(TIM2, ENABLE);
 }
 
 
