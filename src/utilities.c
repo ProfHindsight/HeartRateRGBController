@@ -31,12 +31,11 @@ void utilities_init()
 
 // We're just going to block for now.
 // Move to DMA once we know it works this way
-// BORKEN!
 void send_string(char *string)
 {
     while (*string != 0)
     {
         while (USART_GetFlagStatus(USART1,USART_FLAG_TXE) == 0);
-        USART_SendData(USART1, (uint16_t) ++*string);
+        USART_SendData(USART1, (uint16_t) *string++);
     }
 }

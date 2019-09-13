@@ -14,6 +14,7 @@ int main(void)
     RGB_init();
 
     // // Example usage
+    send_string("Hello World\n");
     write_RGB(250,1000,750);
     write_debug_led(1000);
     delayMs(1000);
