@@ -23,6 +23,11 @@ void TIM2_IRQHandler()
 
 }
 
+void set_effect(void* fcnHandle)
+{
+    irq_effect = fcnHandle;
+}
+
 void effect_fadeOut(void)
 {
     // After this, define what you want it to do
