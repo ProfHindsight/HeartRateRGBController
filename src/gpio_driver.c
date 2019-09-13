@@ -5,7 +5,7 @@
 
 // This might be better as some kind of define to reduce code size
 const gpio_struct_t gpio_pin_mapping[] = {
-    {GPIOA, GPIO_Pin_11, 0x01, 0x00},
+    {GPIOA, GPIO_Pin_11, 0x02, GPIO_AF_2},
     {GPIOA, GPIO_Pin_9, 0x02, GPIO_AF_2}, // RED PWM - A9 - TIM1CH2
     {GPIOA, GPIO_Pin_8, 0x02, GPIO_AF_2}, // GREEN PWM - A8 - TIM1CH1
     {GPIOA, GPIO_Pin_10, 0x02, GPIO_AF_2}, // BLUE PWM - A10 - TIM1CH3

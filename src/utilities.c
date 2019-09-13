@@ -2,6 +2,7 @@
 #include "stm32f0xx_usart.h"
 #include "utilities.h"
 
+
 volatile uint32_t msTicks = 0;
 
 void delayMs(uint32_t ms_delay)
@@ -9,7 +10,6 @@ void delayMs(uint32_t ms_delay)
     unsigned long startTicks = msTicks;
     while ((msTicks - startTicks) < ms_delay);
 }
-
 
 void SysTick_Handler(void) {
     ++msTicks;
@@ -36,6 +36,6 @@ void send_string(char *string)
     while (*string != 0)
     {
         while (USART_GetFlagStatus(USART1,USART_FLAG_TXE) == 0);
-        USART_SendData(USART1, (uint16_t) ++*string);
+        USART_SendData(USART1, (uint16_t) *string++);
     }
 }
