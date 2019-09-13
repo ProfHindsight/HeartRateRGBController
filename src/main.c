@@ -21,7 +21,18 @@ int main(void)
     write_debug_led(0);
     delayMs(1000);
     write_debug_led(1000);
-
-
-    while(1);
+    
+    uint8_t last_hr = 0;
+    uint8_t cur_hr = 0;
+    while(1)
+    {
+        // Look for a rising edge
+        cur_hr = read_gpio(gpio_heart_input);
+        if(cur_hr == 1 && last_hr == 0)
+        {
+            write_RGB(1000,0,0);
+        }
+        last_hr = cur_hr;
+        delayMs(1);
+    }
 }
