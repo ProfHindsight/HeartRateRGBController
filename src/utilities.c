@@ -2,6 +2,7 @@
 #include "stm32f0xx_usart.h"
 #include "utilities.h"
 
+
 volatile uint32_t msTicks = 0;
 
 void delayMs(uint32_t ms_delay)
@@ -9,7 +10,6 @@ void delayMs(uint32_t ms_delay)
     unsigned long startTicks = msTicks;
     while ((msTicks - startTicks) < ms_delay);
 }
-
 
 void SysTick_Handler(void) {
     ++msTicks;
@@ -31,6 +31,7 @@ void utilities_init()
 
 // We're just going to block for now.
 // Move to DMA once we know it works this way
+// BORKEN!
 void send_string(char *string)
 {
     while (*string != 0)
