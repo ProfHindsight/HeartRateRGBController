@@ -8,7 +8,7 @@ uint16_t brightness_green   = 0;
 uint16_t brightness_blue    = 0;
 uint16_t brightness_debug   = 0;
 
-void* irq_effect = effect_fadeOut;
+void *irq_effect();
 
 // Create any time-dependent effects here.
 void TIM2_IRQHandler()
@@ -19,16 +19,29 @@ void TIM2_IRQHandler()
         NVIC_ClearPendingIRQ(TIM2_IRQn);
     }
 
-    irq_effect();
+    (*irq_effect)();
 
 }
 
-void set_effect(void* fcnHandle)
+void set_effect(RGB_Effect effect)
 {
-    irq_effect = fcnHandle;
+    switch(effect)
+    {
+        case effect_fadeout:
+        irq_effect = effect_fadeout_fcn;
+        break;
+        case constant:
+        irq_effect = effect_constant_fcn;
+
+    }
 }
 
-void effect_fadeOut(void)
+void effect_constant_fcn(void)
+{
+
+}
+
+void effect_fadeout_fcn(void)
 {
     // After this, define what you want it to do
     
