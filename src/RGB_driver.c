@@ -2,13 +2,16 @@
 #include "RGB_driver.h"
 #include "stm32f0xx_tim.h"
 #include "stm32f0xx_rcc.h"
+#include "utilities.h"
 
 uint16_t brightness_red     = 0;
 uint16_t brightness_green   = 0;
 uint16_t brightness_blue    = 0;
 uint16_t brightness_debug   = 0;
 
-void *irq_effect();
+void effect_constant_fcn(void);
+void effect_fadeout_fcn(void);
+void (*irq_effect)(void);
 
 // Create any time-dependent effects here.
 void TIM2_IRQHandler()
@@ -23,15 +26,15 @@ void TIM2_IRQHandler()
 
 }
 
-void set_effect(RGB_Effect effect)
+void RGB_set_effect(RGB_Effect_t effect)
 {
     switch(effect)
     {
-        case effect_fadeout:
-        irq_effect = effect_fadeout_fcn;
+        case RGB_effect_fadeout:
+        irq_effect = &effect_fadeout_fcn;
         break;
-        case constant:
-        irq_effect = effect_constant_fcn;
+        case RGB_effect_constant:
+        irq_effect = &effect_constant_fcn;
 
     }
 }
@@ -58,9 +61,9 @@ void effect_fadeout_fcn(void)
         brightness_blue-- ;
     }
 
-    TIM_SetCompare1(TIM1, brightness_green * TIMER_PERIOD / 1000);
-    TIM_SetCompare2(TIM1, brightness_red   * TIMER_PERIOD / 1000);
-    TIM_SetCompare3(TIM1, brightness_blue  * TIMER_PERIOD / 1000);
+    TIM_SetCompare1(TIM1, brightness_green);
+    TIM_SetCompare2(TIM1, brightness_red);
+    TIM_SetCompare3(TIM1, brightness_blue);
 
     // You probably don't need to disable. Save the trees!
     if(
@@ -74,6 +77,9 @@ void effect_fadeout_fcn(void)
 
 void RGB_init(void)
 {
+    // Set the effect first things first
+    irq_effect = &effect_constant_fcn;
+
     // Enable the TIM1 clock
     RCC_APB2PeriphClockCmd(RCC_APB2Periph_TIM1, ENABLE);
 
@@ -97,9 +103,19 @@ void RGB_init(void)
     TIM_Cmd(TIM1, ENABLE);
     TIM_CtrlPWMOutputs(TIM1, ENABLE);
 
+    // Figure out the prescalar and time period for the second timer
+    // Target: 1 kHz interrupts
+    // Clock is something like 48 MHz
+    // Setting 1,000 for the prescalar should give a min freq of 48 kHz
+    // and max freq of like over 1 second.
+    // For the time period, we will set it to 1 kHz. The fade effect should last 1 second then.
+    int16_t prescalar = 1000;
+    int16_t period = 48;
+
     // Configure the second timer and interrupt
     RCC_APB1PeriphClockCmd(RCC_APB1Periph_TIM2, ENABLE);
-    TIM_TimeBaseStructure.TIM_Period = SystemCoreClock/1500;
+    TIM_TimeBaseStructure.TIM_Prescaler = prescalar;
+    TIM_TimeBaseStructure.TIM_Period = period;
     TIM_TimeBaseInit(TIM2, &TIM_TimeBaseStructure);
     TIM_ITConfig(TIM2, TIM_IT_Update, ENABLE);
     NVIC_EnableIRQ(TIM2_IRQn);
@@ -109,13 +125,16 @@ void RGB_init(void)
 /*
 Set the value between 0 and 1000 to set the compare channels.
 */
-void write_RGB(uint16_t red, uint16_t green, uint16_t blue)
+void RGB_write(uint16_t red, uint16_t green, uint16_t blue)
 {
+    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
+    NVIC_ClearPendingIRQ(TIM2_IRQn);
     brightness_red = red;
     brightness_green = green;
     brightness_blue = blue;
-    TIM_ClearITPendingBit(TIM2, TIM_IT_Update);
-    NVIC_ClearPendingIRQ(TIM2_IRQn);
+    TIM_SetCompare1(TIM1, green);
+    TIM_SetCompare2(TIM1, red);
+    TIM_SetCompare3(TIM1, blue);
     TIM_Cmd(TIM2, ENABLE);
 }
 
