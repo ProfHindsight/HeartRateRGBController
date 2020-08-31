@@ -5,7 +5,7 @@ This is a heart rate controller utilizing the STM32F030K6T6
 Run the powershell script to start the build container
 
 ## Building the binary
-Change to the /home/root directory where the Makefile resides
+Change to the /home/root directory where the Makefile resides  
 Run make .
 
 ## Deploying the binary
