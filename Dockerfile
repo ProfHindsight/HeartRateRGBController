@@ -1,17 +1,19 @@
 FROM ubuntu
 
+ARG DEBIAN_FRONTEND=noninteractive
+
 # Setup environment
 RUN apt-get update
-RUN apt-get install -y \
-    libboost-dev \
-    libtool \
-    git \
-    gcc-arm-none-eabi \
-    libnewlib-arm-none-eabi \
-    cmake \
-    build-essential \
-    libusb-1.0 \
-    udev
+RUN apt-get install -y libboost-dev
+RUN apt-get install -y libtool
+RUN apt-get install -y git
+RUN apt-get install -y gcc-arm-none-eabi
+RUN apt-get install -y libnewlib-arm-none-eabi
+RUN apt-get install -y cmake
+RUN apt-get install -y build-essential
+RUN apt-get install -y libusb-1.0
+RUN apt-get install -y udev
+
 
 # Copy the heartrate repo files into the container.
 COPY . /app
@@ -29,9 +31,11 @@ RUN git clone https://github.com/texane/stlink \
     && cd ../../
 
 # Do the rule stuff.
-RUN ./etc/udev/rules.d /etc/udev/ \
-    && udevadm control --reload-rules \
-    && udevadm trigger
+#RUN cp etc/udev/rules.d /etc/udev/ \
+#    && udevadm control --reload-rules \
+#    && udevadm trigger
+
+#RUN /user/bin/bash
 
 # Start bash when entering the container.
-ENTRYPOINT [ "bash" ]
+#ENTRYPOINT [ "bash" ]
