@@ -16,11 +16,12 @@ int main(void)
     SystemInit();
     gpio_init();
     utilities_init();
+    send_string("Starting RGB_Init\n");
     RGB_init();
 
     // // Example usage
-    send_string("Hello World\n");
-    write_RGB(250,1000,750);
+    send_string("Writing RGBs\n");
+    RGB_write(5,1000,100);
     write_debug_led(1000);
     delayMs(1000);
     write_debug_led(0);
