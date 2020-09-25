@@ -15,6 +15,11 @@ void SysTick_Handler(void) {
     ++msTicks;
 }
 
+uint32_t millis()
+{
+    return msTicks;
+}
+
 void utilities_init()
 {
     // Initialize Systick
@@ -38,4 +43,11 @@ void send_string(char *string)
         while (USART_GetFlagStatus(USART1,USART_FLAG_TXE) == 0);
         USART_SendData(USART1, (uint16_t) *string++);
     }
+}
+
+
+int16_t map(int16_t value, int16_t from_low, 
+    int16_t from_high, int16_t to_low, int16_t to_high)
+{
+    return (value - from_low) * (to_high - to_low) / (from_high - from_low) + to_low;
 }
