@@ -13,7 +13,7 @@ cur_heart_rate_t get_hr_periodic(void)
     // Rudimentary peak detection using a digital input and assuming
     // the heart rate sensor can give us a high or low value
     bool cur_val = read_gpio(gpio_heart_input);
-    if cur_val == 1 && last_val == 0
+    if (cur_val == 1 && last_val == 0)
     {
         hr.peak = 1;
         hr.hr = 60000/(millis() - last_millis);
@@ -26,5 +26,5 @@ cur_heart_rate_t get_hr_periodic(void)
     }
 
     last_val = cur_val;
-    return hr
+    return hr;
 }
