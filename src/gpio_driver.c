@@ -58,7 +58,7 @@ void gpio_init(void)
             my_pin.gpio_mode, // Pin Mode
             GPIO_Speed_10MHz, // Pin Speed
             GPIO_OType_PP, // Output Type
-            GPIO_PuPd_NOPULL // Pull Direction
+            GPIO_PuPd_DOWN // Pull Direction
         };
         GPIO_Init(my_pin.gpio_port, &pin_def);
         if (my_pin.gpio_mode == (0x02))

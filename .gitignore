@@ -1,5 +1,14 @@
+<<<<<<< HEAD
 # Directories
 build/
 
 # Files
 **/*.[oa]
+=======
+# Directories
+.vscode/
+build/
+
+# Files
+**/*.[oa]
+>>>>>>> 60ff28874df96004a0f3dfdb30da627ef987cf48

@@ -71,7 +71,7 @@ void RGB_init(void)
 /*
 Set the value between 0 and 1000 to set the compare channels.
 */
-void write_RGB(uint16_t red, uint16_t green, uint16_t blue)
+void RGB_write(uint16_t red, uint16_t green, uint16_t blue)
 {
     TIM_SetCompare1(TIM1, green);
     TIM_SetCompare2(TIM1, red);
