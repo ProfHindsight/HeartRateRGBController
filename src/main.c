@@ -13,20 +13,32 @@
 
 int main(void)
 {
+
+
     SystemInit();
     gpio_init();
     utilities_init();
     send_string("Starting RGB_Init\n");
     RGB_init();
 
+    char num_buf[20];
+    for(int i = 0; i < sizeof(num_buf)/sizeof(num_buf[0]); i++)
+    {
+        num_buf[i] = 0;
+    }
+
     // // Example usage
     send_string("Writing RGBs\n");
-    RGB_write(5,1000,100);
+    RGB_set_effect(RGB_effect_constant);
+    RGB_write(1000,0,0);
     write_debug_led(1000);
     delayMs(1000);
+    RGB_write(0,1000,0);
     write_debug_led(0);
     delayMs(1000);
+    RGB_write(0,0,1000);
     write_debug_led(1000);
+    delayMs(1000);
     cur_heart_rate_t hr = get_hr_periodic();
 
     while(1)
@@ -34,6 +46,8 @@ int main(void)
         hr = get_hr_periodic();
         if(hr.peak == 1)
         {
+            itoa(hr.hr, num_buf, 10);
+            send_stringln(num_buf);
             // Determine red value, LED_MAX if 120
             int32_t red = map(hr.hr, HR_LOW, HR_HIGH, 0, LED_MAX);
 
